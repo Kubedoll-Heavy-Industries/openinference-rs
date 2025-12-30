@@ -1,0 +1,31 @@
+[workspace]
+resolver = "2"
+members = [
+    "openinference-semantic-conventions",
+    "openinference-instrumentation",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+license = "Apache-2.0"
+repository = "https://github.com/cagyirey/openinference-rs"
+keywords = ["opentelemetry", "tracing", "llm", "ai", "observability"]
+categories = ["development-tools::debugging", "development-tools::profiling"]
+
+[workspace.dependencies]
+# OpenTelemetry
+opentelemetry = "0.28"
+opentelemetry_sdk = { version = "0.28", features = ["rt-tokio"] }
+
+# Tracing
+tracing = "0.1"
+tracing-opentelemetry = "0.27"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Testing
+proptest = "1.5"
