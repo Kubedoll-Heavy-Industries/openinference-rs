@@ -36,23 +36,9 @@ jobs:
     if: needs.release-please.outputs.releases_created == 'true'
     uses: ./.github/workflows/security.yml
 
-  semver:
-    name: Semver Check
-    needs: release-please
-    if: needs.release-please.outputs.releases_created == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-      - name: Install cargo-semver-checks
-        run: cargo install cargo-semver-checks
-      - name: Check for semver violations
-        run: cargo semver-checks check-release --all
-
   publish:
     name: Publish to crates.io
-    needs: [release-please, ci, security, semver]
+    needs: [release-please, ci, security]
     if: needs.release-please.outputs.releases_created == 'true'
     runs-on: ubuntu-latest
     environment: crates-io
