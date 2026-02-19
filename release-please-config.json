@@ -20,6 +20,10 @@
         "openinference-semantic-conventions",
         "openinference-instrumentation"
       ]
+    },
+    {
+      "type": "cargo-workspace",
+      "merge": false
     }
   ]
 }
