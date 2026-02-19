@@ -90,6 +90,18 @@ jobs:
         uses: actions/attest-build-provenance@v3
         with:
           subject-path: target/package/openinference-instrumentation-*.crate
+      - name: Upload crates to GitHub Releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for crate_file in target/package/*.crate; do
+            filename=$(basename "$crate_file")
+            # Extract crate name and version from filename (name-version.crate)
+            crate_name="${filename%-[0-9]*}"
+            tag="${crate_name}-v${filename#"${crate_name}-"}"
+            tag="${tag%.crate}"
+            gh release upload "$tag" "$crate_file" --clobber || true
+          done
 
   sbom:
     name: SBOM
