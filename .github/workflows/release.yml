@@ -83,11 +83,11 @@ jobs:
           cargo package -p openinference-semantic-conventions --allow-dirty
           cargo package -p openinference-instrumentation --allow-dirty
       - name: Attest semconv crate
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v3
         with:
           subject-path: target/package/openinference-semantic-conventions-*.crate
       - name: Attest instrumentation crate
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v3
         with:
           subject-path: target/package/openinference-instrumentation-*.crate
 
