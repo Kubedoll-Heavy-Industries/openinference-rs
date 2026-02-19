@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Fast check: formatting only (< 1s on this codebase)
+echo "pre-commit: checking formatting..."
+cargo fmt --all --check 2>&1 || {
+    echo ""
+    echo "Formatting check failed. Run 'cargo fmt --all' to fix."
+    exit 1
+}

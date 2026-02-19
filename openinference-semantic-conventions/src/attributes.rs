@@ -182,10 +182,12 @@ pub mod llm {
             use opentelemetry::Key;
 
             /// Tokens read from cache.
-            pub const CACHE_READ: Key = Key::from_static_str("llm.token_count.prompt_details.cache_read");
+            pub const CACHE_READ: Key =
+                Key::from_static_str("llm.token_count.prompt_details.cache_read");
 
             /// Tokens written to cache.
-            pub const CACHE_WRITE: Key = Key::from_static_str("llm.token_count.prompt_details.cache_write");
+            pub const CACHE_WRITE: Key =
+                Key::from_static_str("llm.token_count.prompt_details.cache_write");
 
             /// Audio tokens in prompt.
             pub const AUDIO: Key = Key::from_static_str("llm.token_count.prompt_details.audio");
@@ -196,7 +198,8 @@ pub mod llm {
             use opentelemetry::Key;
 
             /// Reasoning tokens in completion.
-            pub const REASONING: Key = Key::from_static_str("llm.token_count.completion_details.reasoning");
+            pub const REASONING: Key =
+                Key::from_static_str("llm.token_count.completion_details.reasoning");
 
             /// Audio tokens in completion.
             pub const AUDIO: Key = Key::from_static_str("llm.token_count.completion_details.audio");
@@ -221,9 +224,11 @@ pub mod llm {
             use opentelemetry::Key;
 
             pub const INPUT: Key = Key::from_static_str("llm.cost.prompt_details.input");
-            pub const CACHE_WRITE: Key = Key::from_static_str("llm.cost.prompt_details.cache_write");
+            pub const CACHE_WRITE: Key =
+                Key::from_static_str("llm.cost.prompt_details.cache_write");
             pub const CACHE_READ: Key = Key::from_static_str("llm.cost.prompt_details.cache_read");
-            pub const CACHE_INPUT: Key = Key::from_static_str("llm.cost.prompt_details.cache_input");
+            pub const CACHE_INPUT: Key =
+                Key::from_static_str("llm.cost.prompt_details.cache_input");
             pub const AUDIO: Key = Key::from_static_str("llm.cost.prompt_details.audio");
         }
 
@@ -232,7 +237,8 @@ pub mod llm {
             use opentelemetry::Key;
 
             pub const OUTPUT: Key = Key::from_static_str("llm.cost.completion_details.output");
-            pub const REASONING: Key = Key::from_static_str("llm.cost.completion_details.reasoning");
+            pub const REASONING: Key =
+                Key::from_static_str("llm.cost.completion_details.reasoning");
             pub const AUDIO: Key = Key::from_static_str("llm.cost.completion_details.audio");
         }
     }

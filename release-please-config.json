@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bump-patch-for-minor-pre-major": true,
+  "separate-pull-requests": false,
+  "sequential-calls": true,
+  "packages": {
+    "openinference-semantic-conventions": {
+      "package-name": "openinference-semantic-conventions",
+      "release-type": "rust"
+    },
+    "openinference-instrumentation": {
+      "package-name": "openinference-instrumentation",
+      "release-type": "rust"
+    }
+  },
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "openinference",
+      "components": [
+        "openinference-semantic-conventions",
+        "openinference-instrumentation"
+      ]
+    },
+    {
+      "type": "cargo-workspace",
+      "merge": false
+    }
+  ]
+}

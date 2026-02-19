@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Read the remote and URL (provided by git to pre-push hooks)
+read -r _remote _url <<< "${1:-origin} ${2:-}"
+
+# ── Commit signature check ──────────────────────────────────────────────────
+# Verify all commits being pushed have a signature attached.
+# This checks for signature presence (gpgsig header) without requiring
+# gpg.ssh.allowedSignersFile — full verification is left to GitHub branch
+# protection rules.
+while read -r local_ref local_oid remote_ref remote_oid; do
+    # Skip delete pushes
+    if [ "$local_oid" = "0000000000000000000000000000000000000000" ]; then
+        continue
+    fi
+
+    # Determine commit range
+    if [ "$remote_oid" = "0000000000000000000000000000000000000000" ]; then
+        # New branch: check all commits not reachable from any remote branch
+        range="$local_oid --not --remotes=origin"
+    else
+        range="$remote_oid..$local_oid"
+    fi
+
+    # Check each commit for a signature header
+    unsigned=""
+    for hash in $(git log --format='%H' $range); do
+        if ! git cat-file -p "$hash" | grep -q '^gpgsig'; then
+            unsigned="$unsigned $hash"
+        fi
+    done
+
+    if [ -n "$unsigned" ]; then
+        echo "pre-push: found unsigned commits:"
+        for hash in $unsigned; do
+            echo "  $(git log --format='%h %s' -1 "$hash")"
+        done
+        echo ""
+        echo "Configure commit signing:"
+        echo "  git config commit.gpgsign true"
+        exit 1
+    fi
+done
+
+# ── Lint check ───────────────────────────────────────────────────────────────
+echo "pre-push: running clippy..."
+cargo clippy --all --all-targets --all-features -- -D warnings 2>&1 || {
+    echo ""
+    echo "Clippy check failed. Fix warnings before pushing."
+    exit 1
+}
+
+echo "pre-push: all checks passed."

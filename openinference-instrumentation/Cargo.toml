@@ -1,22 +1,24 @@
 [package]
 name = "openinference-instrumentation"
 description = "OpenInference instrumentation helpers for Rust applications"
-version.workspace = true
+version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
 keywords.workspace = true
 categories.workspace = true
+readme = "../README.md"
 
 [dependencies]
-openinference-semantic-conventions = { path = "../openinference-semantic-conventions" }
+openinference-semantic-conventions = { version = "0.1.0", path = "../openinference-semantic-conventions" }
 opentelemetry = { workspace = true }
 tracing = { workspace = true }
 tracing-opentelemetry = { workspace = true }
 serde_json = { workspace = true }
 
 [dev-dependencies]
-opentelemetry_sdk = { workspace = true }
+opentelemetry_sdk = { workspace = true, features = ["testing"] }
 proptest = { workspace = true }
-tracing-subscriber = { version = "0.3", features = ["fmt"] }
+tokio = { version = "1", features = ["rt", "macros"] }
+tracing-subscriber = { version = "0.3", features = ["fmt", "registry"] }

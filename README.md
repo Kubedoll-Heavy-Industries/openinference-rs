@@ -4,7 +4,7 @@ Rust implementation of [OpenInference](https://github.com/Arize-ai/openinference
 
 [![Crates.io](https://img.shields.io/crates/v/openinference-semantic-conventions.svg)](https://crates.io/crates/openinference-semantic-conventions)
 [![Documentation](https://docs.rs/openinference-semantic-conventions/badge.svg)](https://docs.rs/openinference-semantic-conventions)
-[![License](https://img.shields.io/crates/l/openinference-semantic-conventions.svg)](LICENSE)
+[![License](https://img.shields.io/crates/l/openinference-semantic-conventions.svg)](LICENSE-MIT)
 
 ## Overview
 
@@ -121,7 +121,7 @@ OTEL_SERVICE_NAME=my-llm-app
 
 ## License
 
-Apache-2.0
+MIT OR Apache-2.0
 
 ## Contributing
 
