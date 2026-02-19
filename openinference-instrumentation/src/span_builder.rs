@@ -221,7 +221,10 @@ impl LlmSpanBuilder {
                     if hide_text {
                         span.set_attribute(attributes::llm::input_messages::content(i), REDACTED);
                     } else {
-                        span.set_attribute(attributes::llm::input_messages::content(i), content.clone());
+                        span.set_attribute(
+                            attributes::llm::input_messages::content(i),
+                            content.clone(),
+                        );
                     }
                 }
             }
@@ -319,7 +322,10 @@ impl EmbeddingSpanBuilder {
 
         let span = tracing::info_span!("embedding", otel.name = %span_name);
 
-        span.set_attribute(attributes::OPENINFERENCE_SPAN_KIND, SpanKind::Embedding.as_str());
+        span.set_attribute(
+            attributes::OPENINFERENCE_SPAN_KIND,
+            SpanKind::Embedding.as_str(),
+        );
         span.set_attribute(attributes::embedding::MODEL_NAME, self.model_name.clone());
 
         // Embedding texts
@@ -407,7 +413,10 @@ impl ChainSpanBuilder {
     pub fn build(self) -> Span {
         let span = tracing::info_span!("chain", otel.name = %self.name);
 
-        span.set_attribute(attributes::OPENINFERENCE_SPAN_KIND, SpanKind::Chain.as_str());
+        span.set_attribute(
+            attributes::OPENINFERENCE_SPAN_KIND,
+            SpanKind::Chain.as_str(),
+        );
 
         if let Some(ref input) = self.input_value {
             if !self.config.hide_inputs {
@@ -576,7 +585,10 @@ impl RetrieverSpanBuilder {
 
         let span = tracing::info_span!("retriever", otel.name = %span_name);
 
-        span.set_attribute(attributes::OPENINFERENCE_SPAN_KIND, SpanKind::Retriever.as_str());
+        span.set_attribute(
+            attributes::OPENINFERENCE_SPAN_KIND,
+            SpanKind::Retriever.as_str(),
+        );
 
         if let Some(ref query) = self.query {
             if !self.config.hide_inputs {
@@ -638,7 +650,10 @@ impl AgentSpanBuilder {
 
         let span = tracing::info_span!("agent", otel.name = %span_name);
 
-        span.set_attribute(attributes::OPENINFERENCE_SPAN_KIND, SpanKind::Agent.as_str());
+        span.set_attribute(
+            attributes::OPENINFERENCE_SPAN_KIND,
+            SpanKind::Agent.as_str(),
+        );
         span.set_attribute(attributes::agent::NAME, self.name.clone());
 
         if let Some(ref input) = self.input_value {
@@ -724,7 +739,10 @@ impl RerankerSpanBuilder {
 
         let span = tracing::info_span!("reranker", otel.name = %span_name);
 
-        span.set_attribute(attributes::OPENINFERENCE_SPAN_KIND, SpanKind::Reranker.as_str());
+        span.set_attribute(
+            attributes::OPENINFERENCE_SPAN_KIND,
+            SpanKind::Reranker.as_str(),
+        );
         span.set_attribute(attributes::reranker::MODEL_NAME, self.model_name.clone());
 
         if let Some(ref query) = self.query {
@@ -744,7 +762,10 @@ impl RerankerSpanBuilder {
                 span.set_attribute(attributes::reranker::input_documents::id(i), id.clone());
             }
             if !self.config.hide_inputs {
-                span.set_attribute(attributes::reranker::input_documents::content(i), doc.content.clone());
+                span.set_attribute(
+                    attributes::reranker::input_documents::content(i),
+                    doc.content.clone(),
+                );
             } else {
                 span.set_attribute(attributes::reranker::input_documents::content(i), REDACTED);
             }
@@ -758,17 +779,16 @@ impl RerankerSpanBuilder {
 }
 
 /// Record reranker output documents on a span.
-pub fn record_reranker_output_documents(
-    span: &Span,
-    documents: &[Document],
-    config: &TraceConfig,
-) {
+pub fn record_reranker_output_documents(span: &Span, documents: &[Document], config: &TraceConfig) {
     for (i, doc) in documents.iter().enumerate() {
         if let Some(ref id) = doc.id {
             span.set_attribute(attributes::reranker::output_documents::id(i), id.clone());
         }
         if !config.hide_outputs {
-            span.set_attribute(attributes::reranker::output_documents::content(i), doc.content.clone());
+            span.set_attribute(
+                attributes::reranker::output_documents::content(i),
+                doc.content.clone(),
+            );
         } else {
             span.set_attribute(attributes::reranker::output_documents::content(i), REDACTED);
         }
@@ -826,7 +846,10 @@ impl GuardrailSpanBuilder {
 
         let span = tracing::info_span!("guardrail", otel.name = %span_name);
 
-        span.set_attribute(attributes::OPENINFERENCE_SPAN_KIND, SpanKind::Guardrail.as_str());
+        span.set_attribute(
+            attributes::OPENINFERENCE_SPAN_KIND,
+            SpanKind::Guardrail.as_str(),
+        );
 
         if let Some(ref input) = self.input_value {
             if !self.config.hide_inputs {
@@ -895,7 +918,10 @@ impl EvaluatorSpanBuilder {
 
         let span = tracing::info_span!("evaluator", otel.name = %span_name);
 
-        span.set_attribute(attributes::OPENINFERENCE_SPAN_KIND, SpanKind::Evaluator.as_str());
+        span.set_attribute(
+            attributes::OPENINFERENCE_SPAN_KIND,
+            SpanKind::Evaluator.as_str(),
+        );
 
         if let Some(ref input) = self.input_value {
             if !self.config.hide_inputs {
@@ -955,11 +981,17 @@ pub fn record_output_message(
         span.set_attribute(attributes::llm::output_messages::role(index), REDACTED);
         span.set_attribute(attributes::llm::output_messages::content(index), REDACTED);
     } else {
-        span.set_attribute(attributes::llm::output_messages::role(index), role.to_string());
+        span.set_attribute(
+            attributes::llm::output_messages::role(index),
+            role.to_string(),
+        );
         if hide_text {
             span.set_attribute(attributes::llm::output_messages::content(index), REDACTED);
         } else {
-            span.set_attribute(attributes::llm::output_messages::content(index), content.to_string());
+            span.set_attribute(
+                attributes::llm::output_messages::content(index),
+                content.to_string(),
+            );
         }
     }
 }
@@ -973,12 +1005,18 @@ pub fn record_output_tool_call(
     function_name: &str,
     function_arguments: &str,
 ) {
-    span.set_attribute(attributes::llm::output_messages::tool_calls::id(message_index, call_index), tool_call_id.to_string());
-    span.set_attribute(attributes::llm::output_messages::tool_calls::function_name(message_index, call_index), function_name.to_string());
-    span.set_attribute(attributes::llm::output_messages::tool_calls::function_arguments(
-            message_index, call_index,
-        ),
-        function_arguments.to_string());
+    span.set_attribute(
+        attributes::llm::output_messages::tool_calls::id(message_index, call_index),
+        tool_call_id.to_string(),
+    );
+    span.set_attribute(
+        attributes::llm::output_messages::tool_calls::function_name(message_index, call_index),
+        function_name.to_string(),
+    );
+    span.set_attribute(
+        attributes::llm::output_messages::tool_calls::function_arguments(message_index, call_index),
+        function_arguments.to_string(),
+    );
 }
 
 /// Record retrieval documents on a span.
@@ -988,7 +1026,10 @@ pub fn record_retrieval_documents(span: &Span, documents: &[Document], config: &
             span.set_attribute(attributes::retrieval::documents::id(i), id.clone());
         }
         if !config.hide_outputs {
-            span.set_attribute(attributes::retrieval::documents::content(i), doc.content.clone());
+            span.set_attribute(
+                attributes::retrieval::documents::content(i),
+                doc.content.clone(),
+            );
         } else {
             span.set_attribute(attributes::retrieval::documents::content(i), REDACTED);
         }
@@ -1037,9 +1078,7 @@ mod tests {
             .build();
 
         // Builder with messages and full config
-        let config = TraceConfig::builder()
-            .emit_gen_ai_attributes(true)
-            .build();
+        let config = TraceConfig::builder().emit_gen_ai_attributes(true).build();
         let _span2 = LlmSpanBuilder::new("claude-3")
             .config(config)
             .provider("anthropic")
@@ -1098,9 +1137,7 @@ mod tests {
             .input("user query")
             .build();
 
-        let config = TraceConfig::builder()
-            .emit_gen_ai_attributes(false)
-            .build();
+        let config = TraceConfig::builder().emit_gen_ai_attributes(false).build();
         let _span2 = ChainSpanBuilder::new("rag_pipeline")
             .config(config)
             .input("What is Rust?")
@@ -1211,9 +1248,7 @@ mod tests {
     fn test_record_output_message_privacy() {
         init_test_subscriber();
 
-        let config = TraceConfig::builder()
-            .hide_output_messages(true)
-            .build();
+        let config = TraceConfig::builder().hide_output_messages(true).build();
         let span = LlmSpanBuilder::new("gpt-4").build();
         record_output_message(&span, 0, "assistant", "secret", &config);
     }

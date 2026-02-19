@@ -27,13 +27,13 @@ pub mod span_builder;
 
 pub use config::{TraceConfig, TraceConfigBuilder, REDACTED};
 pub use span_builder::{
+    record_error, record_output_message, record_output_tool_call, record_output_value,
+    record_reranker_output_documents, record_retrieval_documents, record_token_usage,
+};
+pub use span_builder::{
     AgentSpanBuilder, ChainSpanBuilder, Document, EmbeddingSpanBuilder, EvaluatorSpanBuilder,
     GuardrailSpanBuilder, LlmSpanBuilder, RerankerSpanBuilder, RetrieverSpanBuilder,
     ToolSpanBuilder,
-};
-pub use span_builder::{
-    record_error, record_output_message, record_output_tool_call, record_output_value,
-    record_reranker_output_documents, record_retrieval_documents, record_token_usage,
 };
 
 /// Re-export semantic conventions for convenience.

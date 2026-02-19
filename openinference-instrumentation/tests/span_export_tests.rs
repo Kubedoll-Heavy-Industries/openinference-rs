@@ -9,8 +9,7 @@ use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::Registry;
 
 use openinference_instrumentation::span_builder::{
-    ChainSpanBuilder, EmbeddingSpanBuilder, LlmSpanBuilder, RetrieverSpanBuilder,
-    ToolSpanBuilder,
+    ChainSpanBuilder, EmbeddingSpanBuilder, LlmSpanBuilder, RetrieverSpanBuilder, ToolSpanBuilder,
 };
 use openinference_instrumentation::TraceConfig;
 
@@ -145,7 +144,12 @@ fn test_llm_span_attributes() {
     });
 
     let spans = exporter.get_finished_spans().unwrap();
-    assert_eq!(spans.len(), 1, "expected exactly 1 span, got {}", spans.len());
+    assert_eq!(
+        spans.len(),
+        1,
+        "expected exactly 1 span, got {}",
+        spans.len()
+    );
     let span = &spans[0];
 
     // Core OpenInference attributes
@@ -189,7 +193,11 @@ fn test_llm_input_messages() {
 
     // Input messages are emitted as dynamic OTel attributes via set_attribute()
     assert_string_attribute(span, "llm.input_messages.0.message.role", "system");
-    assert_string_attribute(span, "llm.input_messages.0.message.content", "You are a helpful assistant.");
+    assert_string_attribute(
+        span,
+        "llm.input_messages.0.message.content",
+        "You are a helpful assistant.",
+    );
     assert_string_attribute(span, "llm.input_messages.1.message.role", "user");
     assert_string_attribute(span, "llm.input_messages.1.message.content", "Hello!");
 }
@@ -441,9 +449,7 @@ fn test_dual_attribute_emission_enabled() {
 fn test_dual_attribute_emission_disabled() {
     let (subscriber, exporter, _provider) = setup_tracing();
 
-    let config = TraceConfig::builder()
-        .emit_gen_ai_attributes(false)
-        .build();
+    let config = TraceConfig::builder().emit_gen_ai_attributes(false).build();
 
     tracing::subscriber::with_default(subscriber, || {
         let span = LlmSpanBuilder::new("gpt-4")
@@ -685,9 +691,7 @@ fn test_record_output_message() {
 fn test_record_output_message_hidden() {
     let (subscriber, exporter, _provider) = setup_tracing();
 
-    let config = TraceConfig::builder()
-        .hide_output_messages(true)
-        .build();
+    let config = TraceConfig::builder().hide_output_messages(true).build();
 
     tracing::subscriber::with_default(subscriber, || {
         let span = LlmSpanBuilder::new("gpt-4").build();

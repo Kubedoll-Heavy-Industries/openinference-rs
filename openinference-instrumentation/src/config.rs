@@ -263,7 +263,9 @@ impl TraceConfigBuilder {
             hide_inputs: self.hide_inputs.unwrap_or(env.hide_inputs),
             hide_outputs: self.hide_outputs.unwrap_or(env.hide_outputs),
             hide_input_messages: self.hide_input_messages.unwrap_or(env.hide_input_messages),
-            hide_output_messages: self.hide_output_messages.unwrap_or(env.hide_output_messages),
+            hide_output_messages: self
+                .hide_output_messages
+                .unwrap_or(env.hide_output_messages),
             hide_input_images: self.hide_input_images.unwrap_or(env.hide_input_images),
             hide_input_text: self.hide_input_text.unwrap_or(env.hide_input_text),
             hide_output_text: self.hide_output_text.unwrap_or(env.hide_output_text),
@@ -276,7 +278,9 @@ impl TraceConfigBuilder {
             hide_embeddings_vectors: self
                 .hide_embeddings_vectors
                 .unwrap_or(env.hide_embeddings_vectors),
-            hide_embeddings_text: self.hide_embeddings_text.unwrap_or(env.hide_embeddings_text),
+            hide_embeddings_text: self
+                .hide_embeddings_text
+                .unwrap_or(env.hide_embeddings_text),
             hide_prompts: self.hide_prompts.unwrap_or(env.hide_prompts),
             hide_choices: self.hide_choices.unwrap_or(env.hide_choices),
             base64_image_max_length: self
@@ -461,9 +465,7 @@ mod tests {
         let config = TraceConfig::builder().hide_embedding_vectors(true).build();
         assert!(config.should_hide_embedding_vectors());
 
-        let config2 = TraceConfig::builder()
-            .hide_embeddings_vectors(true)
-            .build();
+        let config2 = TraceConfig::builder().hide_embeddings_vectors(true).build();
         assert!(config2.should_hide_embedding_vectors());
     }
 
@@ -475,9 +477,7 @@ mod tests {
     #[test]
     fn test_builder_emit_gen_ai_attributes() {
         let _lock = ENV_LOCK.lock().unwrap();
-        let config = TraceConfig::builder()
-            .emit_gen_ai_attributes(false)
-            .build();
+        let config = TraceConfig::builder().emit_gen_ai_attributes(false).build();
         assert!(!config.emit_gen_ai_attributes);
     }
 }

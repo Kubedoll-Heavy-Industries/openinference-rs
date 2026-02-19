@@ -69,20 +69,23 @@ impl SpanKind {
             SpanKind::Evaluator => "EVALUATOR",
         }
     }
+}
 
-    /// Parses a span kind from its string representation.
-    pub fn from_str(s: &str) -> Option<Self> {
+impl std::str::FromStr for SpanKind {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s.to_uppercase().as_str() {
-            "LLM" => Some(SpanKind::Llm),
-            "EMBEDDING" => Some(SpanKind::Embedding),
-            "CHAIN" => Some(SpanKind::Chain),
-            "TOOL" => Some(SpanKind::Tool),
-            "AGENT" => Some(SpanKind::Agent),
-            "RETRIEVER" => Some(SpanKind::Retriever),
-            "RERANKER" => Some(SpanKind::Reranker),
-            "GUARDRAIL" => Some(SpanKind::Guardrail),
-            "EVALUATOR" => Some(SpanKind::Evaluator),
-            _ => None,
+            "LLM" => Ok(SpanKind::Llm),
+            "EMBEDDING" => Ok(SpanKind::Embedding),
+            "CHAIN" => Ok(SpanKind::Chain),
+            "TOOL" => Ok(SpanKind::Tool),
+            "AGENT" => Ok(SpanKind::Agent),
+            "RETRIEVER" => Ok(SpanKind::Retriever),
+            "RERANKER" => Ok(SpanKind::Reranker),
+            "GUARDRAIL" => Ok(SpanKind::Guardrail),
+            "EVALUATOR" => Ok(SpanKind::Evaluator),
+            _ => Err(()),
         }
     }
 }
@@ -118,10 +121,10 @@ mod tests {
 
     #[test]
     fn test_span_kind_from_str() {
-        assert_eq!(SpanKind::from_str("LLM"), Some(SpanKind::Llm));
-        assert_eq!(SpanKind::from_str("llm"), Some(SpanKind::Llm));
-        assert_eq!(SpanKind::from_str("Llm"), Some(SpanKind::Llm));
-        assert_eq!(SpanKind::from_str("invalid"), None);
+        assert_eq!("LLM".parse(), Ok(SpanKind::Llm));
+        assert_eq!("llm".parse(), Ok(SpanKind::Llm));
+        assert_eq!("Llm".parse(), Ok(SpanKind::Llm));
+        assert_eq!("invalid".parse::<SpanKind>(), Err(()));
     }
 
     #[test]
