@@ -75,6 +75,18 @@ jobs:
       - name: Test (all features)
         run: cargo test --all --all-features
 
+  semver:
+    name: Semver Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install cargo-semver-checks
+        run: cargo install cargo-semver-checks
+      - name: Check for semver violations
+        run: cargo semver-checks check-release --all
+
   docs:
     name: Documentation
     runs-on: ubuntu-latest
