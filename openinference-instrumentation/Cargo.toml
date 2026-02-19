@@ -11,7 +11,7 @@ categories.workspace = true
 readme = "../README.md"
 
 [dependencies]
-openinference-semantic-conventions = { version = "0.1.0", path = "../openinference-semantic-conventions" }
+openinference-semantic-conventions = { version = "0.0.1", path = "../openinference-semantic-conventions" }
 opentelemetry = { workspace = true }
 tracing = { workspace = true }
 tracing-opentelemetry = { workspace = true }
