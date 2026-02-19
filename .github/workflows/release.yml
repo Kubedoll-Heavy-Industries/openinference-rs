@@ -1,0 +1,117 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+  attestations: write
+
+jobs:
+  release-please:
+    name: Release Please
+    runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.release.outputs.releases_created }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  ci:
+    name: CI Gate
+    needs: release-please
+    if: needs.release-please.outputs.releases_created == 'true'
+    uses: ./.github/workflows/ci.yml
+
+  security:
+    name: Security Gate
+    needs: release-please
+    if: needs.release-please.outputs.releases_created == 'true'
+    uses: ./.github/workflows/security.yml
+
+  semver:
+    name: Semver Check
+    needs: release-please
+    if: needs.release-please.outputs.releases_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install cargo-semver-checks
+        run: cargo install cargo-semver-checks
+      - name: Check for semver violations
+        run: cargo semver-checks check-release --all
+
+  publish:
+    name: Publish to crates.io
+    needs: [release-please, ci, security, semver]
+    if: needs.release-please.outputs.releases_created == 'true'
+    runs-on: ubuntu-latest
+    environment: crates-io
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Publish crates
+        uses: Kubedoll-Heavy-Industries/publish-crates@dist/v2
+        with:
+          registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+  provenance:
+    name: Build Provenance
+    needs: [release-please, publish]
+    if: needs.release-please.outputs.releases_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Package crates
+        run: |
+          cargo package -p openinference-semantic-conventions --allow-dirty
+          cargo package -p openinference-instrumentation --allow-dirty
+      - name: Attest semconv crate
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: target/package/openinference-semantic-conventions-*.crate
+      - name: Attest instrumentation crate
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: target/package/openinference-instrumentation-*.crate
+
+  sbom:
+    name: SBOM
+    needs: [release-please, publish]
+    if: needs.release-please.outputs.releases_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install cargo-cyclonedx
+        run: cargo install cargo-cyclonedx
+      - name: Generate SBOM
+        run: cargo cyclonedx --all --format json
+      - name: Upload SBOMs to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for bom in **/bom.json; do
+            crate_dir=$(dirname "$bom")
+            crate_name=$(basename "$crate_dir")
+            gh release upload "$(gh release list --limit 1 --json tagName -q '.[0].tagName')" \
+              "$bom#${crate_name}-sbom.cdx.json" \
+              --clobber || true
+          done
