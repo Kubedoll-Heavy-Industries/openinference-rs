@@ -1,0 +1,62 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**/Cargo.toml"
+      - "Cargo.lock"
+      - "deny.toml"
+      - "supply-chain/**"
+      - ".github/workflows/security.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "**/Cargo.toml"
+      - "Cargo.lock"
+      - "deny.toml"
+      - "supply-chain/**"
+      - ".github/workflows/security.yml"
+  schedule:
+    # Daily at 06:00 UTC to catch newly disclosed CVEs
+    - cron: "0 6 * * *"
+  workflow_call:
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: cargo-audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rustsec/audit-check@v2.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  deny:
+    name: cargo-deny (${{ matrix.check }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        check: [advisories, bans, licenses, sources]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          command: check ${{ matrix.check }}
+
+  vet:
+    name: cargo-vet
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install cargo-vet
+        run: cargo install cargo-vet
+      - name: Check supply chain
+        run: cargo vet --locked

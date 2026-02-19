@@ -1,0 +1,51 @@
+# Configuration for cargo-deny
+# https://embarkstudios.github.io/cargo-deny/
+
+[graph]
+targets = []
+all-features = true
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Advisories: check for known vulnerabilities and unmaintained crates
+# ──────────────────────────────────────────────────────────────────────────────
+[advisories]
+yanked = "warn"
+ignore = []
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Licenses: only allow permissive licenses compatible with Apache-2.0
+# ──────────────────────────────────────────────────────────────────────────────
+[licenses]
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Unicode-3.0",
+    "Unlicense",
+]
+confidence-threshold = 0.8
+
+[[licenses.clarify]]
+crate = "unicode-ident"
+expression = "(MIT OR Apache-2.0) AND Unicode-3.0"
+license-files = [{ path = "LICENSE-UNICODE", hash = 0x3fb01745 }]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Bans: prevent duplicate versions and wildcard dependencies
+# ──────────────────────────────────────────────────────────────────────────────
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+highlight = "all"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Sources: only allow crates.io — no unknown registries or git sources
+# ──────────────────────────────────────────────────────────────────────────────
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []

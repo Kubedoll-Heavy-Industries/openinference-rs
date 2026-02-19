@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**.rs"
+      - "**/Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "**.rs"
+      - "**/Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/ci.yml"
+  workflow_call:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: "-Dwarnings"
+
+jobs:
+  fmt:
+    name: Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt
+      - run: cargo fmt --all --check
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo clippy --all --all-targets --all-features
+
+  test:
+    name: Test (${{ matrix.toolchain }} on ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - toolchain: "1.93"
+            os: ubuntu-latest
+          - toolchain: stable
+            os: ubuntu-latest
+          - toolchain: stable
+            os: macos-latest
+          - toolchain: nightly
+            os: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.toolchain }}
+      - name: Test (default features)
+        run: cargo test --all
+      - name: Test (all features)
+        run: cargo test --all --all-features
+
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    env:
+      RUSTDOCFLAGS: "-Dwarnings"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo doc --all --all-features --no-deps

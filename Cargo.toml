@@ -8,9 +8,11 @@ members = [
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.75"
+rust-version = "1.93"
 license = "Apache-2.0"
 repository = "https://github.com/cagyirey/openinference-rs"
+homepage = "https://github.com/cagyirey/openinference-rs"
+documentation = "https://docs.rs/openinference-instrumentation"
 keywords = ["opentelemetry", "tracing", "llm", "ai", "observability"]
 categories = ["development-tools::debugging", "development-tools::profiling"]
 
