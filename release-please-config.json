@@ -11,5 +11,15 @@
       "package-name": "openinference-instrumentation",
       "release-type": "rust"
     }
-  }
+  },
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "openinference",
+      "components": [
+        "openinference-semantic-conventions",
+        "openinference-instrumentation"
+      ]
+    }
+  ]
 }
