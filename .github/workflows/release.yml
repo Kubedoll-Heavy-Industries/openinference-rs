@@ -56,14 +56,34 @@ jobs:
     if: needs.release-please.outputs.releases_created == 'true'
     runs-on: ubuntu-latest
     environment: crates-io
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - uses: katyo/publish-crates@v2
-        with:
-          registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-          publish-delay: 30000
+
+      # Trusted publishing (OIDC) — no long-lived API token needed.
+      # Requires one-time setup per crate on crates.io after initial publish:
+      #   1. Go to crates.io/crates/<crate>/settings
+      #   2. Add a trusted GitHub Actions publisher
+      #   3. Remove the CARGO_REGISTRY_TOKEN secret from the crates-io environment
+      #
+      # For the initial v0.1.0 publish, set CARGO_REGISTRY_TOKEN as a fallback.
+      # The auth action will prefer OIDC when trusted publishing is configured,
+      # and the token acts as a fallback until then.
+      - name: Authenticate with crates.io
+        id: auth
+        uses: rust-lang/crates-io-auth-action@v1
+      - name: Publish crates
+        run: |
+          cargo publish -p openinference-semantic-conventions
+          echo "Waiting 30s for crates.io index propagation..."
+          sleep 30
+          cargo publish -p openinference-instrumentation
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token || secrets.CARGO_REGISTRY_TOKEN }}
 
   provenance:
     name: Build Provenance
