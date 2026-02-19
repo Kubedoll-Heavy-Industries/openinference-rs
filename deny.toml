@@ -13,7 +13,7 @@ yanked = "warn"
 ignore = []
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Licenses: only allow permissive licenses compatible with Apache-2.0
+# Licenses: only allow permissive licenses compatible with MIT OR Apache-2.0
 # ──────────────────────────────────────────────────────────────────────────────
 [licenses]
 allow = [
