@@ -19,9 +19,12 @@ cargo test --all                     # run all tests (11 unit + doc-tests)
 cargo test -p openinference-semantic-conventions  # test just semconv crate
 cargo test -p openinference-instrumentation       # test just instrumentation crate
 cargo test --all -- test_llm_span    # run a single test by name
+cargo deny check                     # license + advisory + ban + source checks
+cargo vet --locked                   # supply chain audit (cargo-vet)
+cargo semver-checks check-release --all  # semver compatibility check
 ```
 
-MSRV is 1.93. Edition 2021.
+MSRV is 1.93. Edition 2021. Published on [crates.io](https://crates.io/crates/openinference-semantic-conventions).
 
 ## Workspace Structure
 
@@ -78,3 +81,14 @@ These versions must stay in sync with the geodesic workspace:
 - [OpenInference Configuration](https://github.com/Arize-ai/openinference/blob/main/spec/configuration.md) — the 13 TraceConfig env vars
 - [OTel GenAI Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/) — the competing standard we also support
 - [Tracking issue](https://github.com/Kubedoll-Heavy-Industries/geodesic/issues/138) — phased roadmap and engineering context
+
+## CI/CD
+
+All workflows live in `.github/workflows/`:
+
+- **ci.yml** — fmt, clippy, test matrix (MSRV 1.93 / stable / nightly × ubuntu + stable × macOS), docs, semver checks. Runs on push to main and PRs.
+- **security.yml** — cargo-audit, cargo-deny (advisories/bans/licenses/sources), cargo-vet. Runs on push/PR and daily at 06:00 UTC.
+- **pr.yml** — Enforces conventional commit PR titles via semantic-pull-request.
+- **release.yml** — release-please creates version bump PRs on push to main. On merge, gates on CI + security, then publishes to crates.io via OIDC trusted publishing, generates provenance attestations, and uploads SBOMs.
+
+Releases use [release-please](https://github.com/googleapis/release-please) with linked versions (both crates always release at the same version). Configuration in `release-please-config.json` and `.release-please-manifest.json`.
