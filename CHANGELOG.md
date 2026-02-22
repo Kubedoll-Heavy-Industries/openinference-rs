@@ -19,4 +19,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optional `serde` feature for serialization support on semantic convention types
 - Indexed attribute key generation (e.g., `llm.input_messages.0.message.role`)
 
-[0.1.0]: https://github.com/cagyirey/openinference-rs/releases/tag/v0.1.0
+[0.1.0]: https://github.com/Kubedoll-Heavy-Industries/openinference-rs/releases/tag/v0.1.0
