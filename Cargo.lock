@@ -310,9 +310,9 @@ dependencies = [
 
 [[package]]
 name = "opentelemetry"
-version = "0.31.0"
+version = "0.32.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b84bcd6ae87133e903af7ef497404dda70c60d0ea14895fc8a5e6722754fc2a0"
+checksum = "b0142c63252a9e054e68a4c61a5778f7b14f576274d593f8ce883d191a099682"
 dependencies = [
  "futures-core",
  "futures-sink",
@@ -324,15 +324,16 @@ dependencies = [
 
 [[package]]
 name = "opentelemetry_sdk"
-version = "0.31.0"
+version = "0.32.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e14ae4f5991976fd48df6d843de219ca6d31b01daaab2dad5af2badeded372bd"
+checksum = "9b59f80e1ac4d5ff7a2db8fb6c80badb7f0f3f858211fba08dd9aaec750894f9"
 dependencies = [
  "futures-channel",
  "futures-executor",
  "futures-util",
  "opentelemetry",
  "percent-encoding",
+ "portable-atomic",
  "rand",
  "thiserror",
  "tokio",
@@ -350,6 +351,12 @@ name = "pin-project-lite"
 version = "0.2.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd"
+
+[[package]]
+name = "portable-atomic"
+version = "1.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c33a9471896f1c69cecef8d20cbe2f7accd12527ce60845ff44c153bb2a21b49"
 
 [[package]]
 name = "ppv-lite86"
@@ -700,9 +707,9 @@ dependencies = [
 
 [[package]]
 name = "tracing-opentelemetry"
-version = "0.32.1"
+version = "0.33.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1ac28f2d093c6c477eaa76b23525478f38de514fa9aeb1285738d4b97a9552fc"
+checksum = "adbc64cba7137545b8044cb1fe9814f7aacf3c6b5f9b45be8bb5db538befdb26"
 dependencies = [
  "js-sys",
  "opentelemetry",
@@ -998,44 +1005,48 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b8848ee67ecc8aedbaf3e4122217aff892639231befc6a1b58d29fff4c2cabaa"
 
 [[patch.unused]]
-name = "mistralrs"
-version = "0.7.0"
-
-[[patch.unused]]
-name = "mistralrs-core"
-version = "0.7.0"
-
-[[patch.unused]]
-name = "mistralrs-server-core"
-version = "0.7.0"
+name = "cudarc"
+version = "0.19.4"
 
 [[patch.unused]]
 name = "cudarc"
-version = "0.19.3"
+version = "0.19.4"
 
 [[patch.unused]]
 name = "candle-core"
-version = "0.9.2"
+version = "0.10.2"
+
+[[patch.unused]]
+name = "candle-cubecl"
+version = "0.10.2"
 
 [[patch.unused]]
 name = "candle-flash-attn"
-version = "0.9.2"
+version = "0.10.2"
 
 [[patch.unused]]
 name = "candle-flash-attn-v3"
-version = "0.9.2"
+version = "0.10.2"
 
 [[patch.unused]]
 name = "candle-flashinfer"
-version = "0.9.2"
+version = "0.10.2"
 
 [[patch.unused]]
 name = "candle-metal-kernels"
-version = "0.9.2"
+version = "0.10.2"
+
+[[patch.unused]]
+name = "candle-metal-sampling"
+version = "0.1.0"
 
 [[patch.unused]]
 name = "candle-nn"
-version = "0.9.2"
+version = "0.10.2"
+
+[[patch.unused]]
+name = "candle-transformers"
+version = "0.10.2"
 
 [[patch.unused]]
 name = "llguidance"
@@ -1044,7 +1055,3 @@ version = "1.6.1"
 [[patch.unused]]
 name = "toktrie_hf_tokenizers"
 version = "1.6.1"
-
-[[patch.unused]]
-name = "cudarc"
-version = "0.19.3"
