@@ -10,8 +10,8 @@ version = "0.1.0"
 edition = "2021"
 rust-version = "1.93"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/Kubedoll-Heavy-Industries/openinference-rs"
-homepage = "https://github.com/Kubedoll-Heavy-Industries/openinference-rs"
+repository = "https://github.com/geodesa-ai/openinference-rs"
+homepage = "https://github.com/geodesa-ai/openinference-rs"
 documentation = "https://docs.rs/openinference-instrumentation"
 keywords = ["opentelemetry", "tracing", "llm", "ai", "observability"]
 categories = ["development-tools::debugging", "development-tools::profiling"]
@@ -19,7 +19,7 @@ categories = ["development-tools::debugging", "development-tools::profiling"]
 [workspace.dependencies]
 # OpenTelemetry
 opentelemetry = "0.32"
-opentelemetry_sdk = { version = "0.32", features = ["rt-tokio"] }
+opentelemetry_sdk = { version = "0.32.1", features = ["rt-tokio"] }
 
 # Tracing
 tracing = "0.1"
